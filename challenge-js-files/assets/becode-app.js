@@ -17,6 +17,7 @@ What does this script do ?
     let countTable=0;
     let dataInTable1=[];
 
+
     for (let i=2;i<cloneTable1.rows.length;i++){
 
         const dataObject= new Object();
@@ -138,70 +139,79 @@ What does this script do ?
             }
 
         }
-        dataInTable1[countTable++]=dataObject;
+            dataInTable1[countTable++]=dataObject;
     }
+
+
 
     console.log(dataInTable1);
 
 
-    // CREATE DROPDOWN MENU ----------------------------------------------------------------------------------------------------------------
-const menuDropDown= () =>{
-    const years=[2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012];
-    let dropdown1=document.createElement("select");
-    dropdown1.id="menu1";
+//     // CREATE DROPDOWN MENU ----------------------------------------------------------------------------------------------------------------
+// const menuDropDown= () =>{
+//     const years=[2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012];
+//     let dropdown1=document.createElement("select");
+//     dropdown1.id="menu1";
+//
+//     for(let i=0;i<years.length;i++){
+//         let opt=document.createElement("option");
+//         opt.text=years[i];
+//         opt.value="data"+years[i];
+//         dropdown1.appendChild(opt);
+//     }
+//     document.getElementsByTagName("h3")[0].append(dropdown1);
+// }
+//
+// menuDropDown();
 
-    for(let i=0;i<years.length;i++){
-        let opt=document.createElement("option");
-        opt.text=years[i];
-        opt.value="data"+years[i];
-        dropdown1.appendChild(opt);
+
+
+function mapping(dataTable, menuValue){
+
+        let contentArray=[];
+
+    switch(menuValue) {
+          case "data2002":
+                contentArray=dataTable.map(item=>item.data2002);
+
+            break;
+          case "data2003":
+                contentArray=dataTable.map(item=>item.data2003);
+            break;
+          case "data2004":
+                contentArray=dataTable.map(item=>item.data2004);
+            break;
+          case "data2005":
+                contentArray=dataTable.map(item=>item.data2005);
+            break;
+          case "data2006":
+                contentArray=dataTable.map(item=>item.data2006);
+            break;
+          case "data2007":
+                contentArray=dataTable.map(item=>item.data2007);
+            break;
+          case "data2008":
+                contentArray=dataTable.map(item=>item.data2008);
+            break;
+          case "data2009":
+                contentArray=dataTable.map(item=>item.data2009);
+              break;
+          case "data2010":
+                contentArray=dataTable.map(item=>item.data2010);
+              break;
+          case "data2011":
+                contentArray=dataTable.map(item=>item.data2011);
+              break;
+          case "data2012":
+                contentArray=dataTable.map(item=>item.data2012);
+              break;
+
     }
-    document.getElementsByTagName("h3")[0].append(dropdown1);
+
+        return contentArray;
 }
 
-menuDropDown();
-
-
-
-
-
-
-    // // create scaling on Y and X------------------------------------------------------------------------------
-    // const ygraph1=d3.scaleLinear()
-    //                 .domain([0,2800])
-    //                 .range([0,600]);
-    //
-    // const xgraph1=d3.scaleBand()
-    //                 .domain(dataInTable1.map(item=>item.country))
-    //                 .range([0.600]);
-    //
-    //
-    //
-    //
-    //
-    // // create rect in the svg----------------------------------------------------------------------------
-    // const rectanglesForGraph1 = svgGraph1.selectAll("svg")
-    //                                      .append("rect")
-    //                                      .data(dataInTable1);
-    // // give data to rect------------------------------------------------------------------------------
-    //     rectanglesForGraph1.attr("width", xgraph1.bandwidth())
-    //                        .attr("height", function(d){return ygraph1(d.data2002)})
-    //                        .attr("fill", "steelblue")
-    //                        .attr("x", function(d){return xgraph1(d.country)});
-    //
-    //
-    // // enter other data
-    //
-    //     rectanglesForGraph1.enter()
-    //                        .append("rect")
-    //                        .attr("width", xgraph1.bandwidth())
-    //                        .attr("height", function(d){return ygraph1(d.data2002)})
-    //                        .attr("fill", "steelblue")
-    //                        .attr("x", function(d){return xgraph1(d.country)});
-    //
-
-
-const graph = (data,data.year) =>{
+const graph = (data, year) =>{
 
 
     // set the dimensions and margins of the graph
@@ -228,7 +238,7 @@ const graph = (data,data.year) =>{
 
       // X axis: scale and draw:
       const x = d3.scaleBand()
-                  .domain(dataInTable1.map(item=>item.country))
+                  .domain(data.map(item=>item.country))
                   .range([0, width])
                   .paddingInner(0.3)
                   .paddingOuter(0.2);
@@ -241,7 +251,7 @@ const graph = (data,data.year) =>{
 
       // append the bar rectangles to the svg element
       graph.selectAll("rect")
-          .data(dataInTable1)
+          .data(data)
           .enter()
           .append("rect")
           .attr("width", x.bandwidth())
@@ -249,10 +259,11 @@ const graph = (data,data.year) =>{
           .attr("x", function(d){return x(d.country)})
           .attr("fill", "steelblue")
           .attr("y",height)
+          .data(year)
           .transition()
           .duration(3000)
-          .attr("y",function(d){return y(d.data2002)})
-          .attr("height", function(d){return height-y(d.data2002)});
+          .attr("y",function(d){return y(d)})
+          .attr("height", function(d){return height-y(d)});
 
     // create AXIS
 
@@ -267,43 +278,79 @@ const graph = (data,data.year) =>{
            .attr("text-anchor","end");
 }
 
-switch(document.getElementById("menu1").option.value) {
-  case data2002:
-        graph();
-    break;
-  case data2003:
-        graph();
-    break;
-  case data2004:
-        graph();
-    break;
-  case data2005:
-        graph();
-    break;
-  case data2006:
-        graph();
-    break;
-  case data2007:
-        graph();
-    break;
-  case data2008:
-        graph();
-    break;
-  case data2009:
-        graph();
-      break;
-  case data2010:
-        graph();
-      break;
-  case data2011:
-        graph();
-      break;
-  case data2012:
-        graph();
-      break;
 
-}
+// CREATE DROP DOWN
 
-graph();
+const dataYear=["data2002","data2003","data2004","data2005", "data2006","data2007","data2008","data2009","data2010","data2011","data2012"];
+const years=[2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012];
+
+const dropdown1=d3.select("#mw-content-text")
+                  .insert("select","#table1")
+                  .attr("id", "selectcountry")
+                  .on("change", switchcountry);
+
+    dropdown1.selectAll("option")
+             .data(years)
+             .enter()
+             .append("option")
+             .text(function(d){return d})
+             .data(dataYear)
+             .attr("value", function(d){return d});
+
+    function switchcountry(){
+        d3.select("#mw-content-text").select("svg").remove();
+        graph(dataInTable1, mapping(dataInTable1,this.value));
+    }
+
+
+
+// let select=document.getElementById("menu1");
+// select.addEventListener("change", function(){
+//
+//     const datayear=["data2002","data2003","data2004","data2005", "data2006","data2007","data2008","data2009","data2010","data2011","data2012"];
+//
+//     switch(this.value) {
+//       case "data2002":
+//             graph(dataInTable1, datayear[0]);
+//
+//         break;
+//       case "data2003":
+//             graph(dataInTable1,datayear[1]);
+//         break;
+//       case "data2004":
+//             graph(dataInTable1,datayear[2]);
+//         break;
+//       case "data2005":
+//             graph(dataInTable1,datayear[3]);
+//         break;
+//       case "data2006":
+//             graph(dataInTable1,datayear[4]);
+//         break;
+//       case "data2007":
+//             graph(dataInTable1,datayear[5]);
+//         break;
+//       case "data2008":
+//             graph(dataInTable1,datayear[6]);
+//         break;
+//       case "data2009":
+//             graph(dataInTable1,datayear[7]);
+//           break;
+//       case "data2010":
+//             graph(dataInTable1,datayear[8]);
+//           break;
+//       case "data2011":
+//             graph(dataInTable1,datayear[9]);
+//           break;
+//       case "data2012":
+//             graph(dataInTable1,datayear[10]);
+//           break;
+//
+//     }
+//
+// });
+//
+
+
+//graph();
 
 })();
