@@ -353,8 +353,99 @@ const dropdown2=d3.select("#mw-content-text")
     }
 
 
-    //graph(dataInTable1,mapping(dataInTable1,"data2002"), "#table1", max1);
-    //graph(dataInTable2,mapping(dataInTable2,"data200709"), "#table2", max2);
+
+// create the Line graphic -------------------------------------------------------------------------------------------------------
+    function graphApi(data) {
+
+
+        // set the dimensions and margins of the graph----------------------------------------------------------------------------------------------
+        let margin = {top: 30, right: 20, bottom: 55, left: 50},
+            width = 800 - margin.left - margin.right,
+            height = 600 - margin.top - margin.bottom;
+
+        const svg = d3.select("#content")
+                       .insert("svg","#bodyContent")
+                       .attr("width", width + margin.left + margin.right)
+                       .attr("height", height + margin.top + margin.bottom)
+                       .style("background", "GhostWhite");
+
+        const graph= svg.append('g')
+                         .attr("width", width)
+                         .attr("height",height)
+                         .attr("transform",`translate(${margin.left},${margin.top})`);
+
+        const groupeX=graph.append("g")
+                           .attr("transform",`translate(0,${height})`);
+
+        const groupeY=graph.append("g");
+
+          // X axis: scale-----------------------------------------------------------------------------------------------------------------------------------------
+          const x = d3.scaleLinear()
+                      .domain([0,50])
+                      .range([0, width]);
+
+
+          // Y axis: scale-----------------------------------------------------------------------------------------------------------------------------------
+          const y = d3.scaleLinear()
+                      .domain([-30,30])
+                      .range([height,0]);
+
+
+        //create the line
+        svg.append("path")
+            .data(data)
+            .attr("fill", "none")
+            .attr("stroke", "steelblue")
+            .attr("stroke-width", 1.5)
+            .attr("d", d3.line()
+                         .x(function(d) { return x(d.x)})
+                         .y(function(d) { return y(d.y)})
+                        );
+
+
+        // create AXIS-----------------------------------------------------------------------------------------------------------------------------
+
+        const axeX=d3.axisBottom(x);
+        const axeY=d3.axisLeft(y);
+
+        groupeX.call(axeX);
+        groupeY.call(axeY);
+
+}
+
+// GET DATA FROM API----------------------------------------------------------------------------------------------
+    async function getDataApi(){
+        try{
+            const response= await fetch("https://inside.becode.org/api/v1/data/random.json");
+            const dataResponse = await response.json();
+            let dataForGraphApi=assemblyDataApi(dataResponse);
+            graphApi(dataForGraphApi);
+            console.log(dataForGraphApi);
+
+        }catch(error){
+            console.error(error);
+        }
+    }
+// create object with the data from api----------------------------------------------------------------------------------------
+    function assemblyDataApi(dataFromApi){
+        let dataApi=[];
+        dataFromApi.forEach(function(element){
+            dataApi.push({x: parseInt(element[0]), y: parseInt(element[1])});
+        });
+    
+        return dataApi;
+    }
+
+
+getDataApi();
+
+
+
+
+
+
+    // graph(dataInTable1,mapping(dataInTable1,"data2002"), "#table1", max1);
+    // graph(dataInTable2,mapping(dataInTable2,"data200709"), "#table2", max2);
 
 
 })();
